@@ -4,12 +4,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 abstract class MovieGptService {
-  Future<String> getQouteFromMovie(String movieTitle);
+  Future<String> getQuoteFromMovie(String movieTitle);
 }
 
 class ChatGptService implements MovieGptService {
   @override
-  Future<String> getQouteFromMovie(String movieTitle) async {
+  Future<String> getQuoteFromMovie(String movieTitle) async {
     final apikey = dotenv.env['OPENAI_API_KEY'];
     final response = await http.post(
         Uri.parse(

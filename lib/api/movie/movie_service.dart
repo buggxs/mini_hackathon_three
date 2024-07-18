@@ -36,7 +36,7 @@ class MovieService implements MovieGptService {
   }
 
   @override
-  Future<String> getQouteFromMovie(String movieTitle) async {
+  Future<String> getQuoteFromMovie(String movieTitle) async {
     final apikey = dotenv.env['OPENAI_API_KEY'];
     final response = await http.post(
         Uri.parse(
