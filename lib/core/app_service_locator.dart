@@ -7,5 +7,5 @@ void setup() {
   // For testing purposes
   app.allowReassignment = true;
 
-  app.registerFactory<MovieService>(OnlineMovieService.new);
+  app.registerFactory<MovieService>(MovieService.new);
 }

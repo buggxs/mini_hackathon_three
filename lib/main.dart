@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mini_hackathon_three/api/movie/data/movie.dart';
 import 'package:mini_hackathon_three/api/movie/movie_service.dart';
 import 'package:mini_hackathon_three/core/app_service_locator.dart';
 import 'package:mini_hackathon_three/misc/logger.dart';
 
-void main() {
+void main() async {
   setup();
-
+  await dotenv.load(fileName: '.env');
   runApp(const MovieGame());
 }
 
