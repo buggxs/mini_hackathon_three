@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'movie_detail.freezed.dart';
-part 'moviev_detail.g.dart';
+part 'movie_detail.g.dart';
 
 @freezed
 class MovieDetail with _$MovieDetail {
