@@ -68,6 +68,10 @@ class _MovieGameScreenState extends State<MovieGameScreen> with LoggerMixin {
 
   void loadMovie() async {
     Movie loadedMovie = await app<MovieService>().getMovie(id: 'tt3896198');
+
+    app<MovieService>()
+        .searchMovie(title: 'Batman')
+        .then((value) => log.info(value));
     setState(() {
       movie = loadedMovie;
     });
