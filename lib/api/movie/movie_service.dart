@@ -3,9 +3,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:mini_hackathon_three/api/movie/data/movie.dart';
+import 'package:mini_hackathon_three/api/movie/data/result_list.dart';
 
 abstract class MovieService {
   Future<Movie> getMovie({required String id});
+
+  Future<ResultList> searchMovie({required String title});
 }
 
 // movie id = tt3896198
@@ -16,5 +19,13 @@ class OnlineMovieService implements MovieService {
     return http
         .get(url)
         .then((Response response) => Movie.fromJson(jsonDecode(response.body)));
+  }
+
+  @override
+  Future<ResultList> searchMovie({required String title}) {
+    Uri url =
+        Uri.https('www.omdbapi.com', '', {'s': title, 'apikey': 'b7c0cdea'});
+    return http.get(url).then(
+        (Response response) => ResultList.fromJson(jsonDecode(response.body)));
   }
 }

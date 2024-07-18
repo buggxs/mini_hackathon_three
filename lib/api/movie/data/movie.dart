@@ -14,6 +14,8 @@ class Movie with _$Movie {
     String? runtime,
     String? genre,
     String? boxOffice,
+    String? type,
+    String? poster,
   }) = _Movie;
 
   factory Movie.fromJson(Map<String, Object?> json) => _$MovieFromJson(json);
