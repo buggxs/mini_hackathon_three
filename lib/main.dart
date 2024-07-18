@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mini_hackathon_three/api/movie/data/movie.dart';
 import 'package:mini_hackathon_three/api/movie/movie_service.dart';
 import 'package:mini_hackathon_three/core/app_service_locator.dart';
 import 'package:mini_hackathon_three/misc/logger.dart';
@@ -35,27 +36,40 @@ class MovieGameScreen extends StatefulWidget {
 }
 
 class _MovieGameScreenState extends State<MovieGameScreen> with LoggerMixin {
+  Movie? movie;
+
   @override
   Widget build(BuildContext context) {
-    app<MovieService>()
-        .getMovie(id: 'tt3896198')
-        .then((value) => log.info(value));
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Movie Game',
+      body: movie == null
+          ? const CircularProgressIndicator()
+          : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    movie?.toString() ?? '',
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
     );
+  }
+
+  @override
+  void initState() {
+    loadMovie();
+    super.initState();
+  }
+
+  void loadMovie() async {
+    Movie loadedMovie = await app<MovieService>().getMovie(id: 'tt3896198');
+    setState(() {
+      movie = loadedMovie;
+    });
   }
 }
