@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mini_hackathon_three/api/movie/chat_gpt_service.dart';
 import 'package:mini_hackathon_three/api/movie/data/movie.dart';
+import 'package:mini_hackathon_three/api/movie/data/movie_detail.dart';
+import 'package:mini_hackathon_three/api/movie/data/movie_detail_page.dart';
 import 'package:mini_hackathon_three/api/movie/movie_service.dart';
 import 'package:mini_hackathon_three/core/app_service_locator.dart';
 import 'package:mini_hackathon_three/misc/logger.dart';
@@ -68,9 +71,15 @@ class _MovieGameScreenState extends State<MovieGameScreen> with LoggerMixin {
   }
 
   void loadMovie() async {
-    Movie loadedMovie = await app<MovieService>().getMovie(id: 'tt3896198');
-    setState(() {
-      movie = loadedMovie;
-    });
+    MovieDetailPage moviePage = await app<MovieService>().fetchPopularMovies();
+    if (moviePage.movieList?.isEmpty ?? true) {
+      return;
+    }
+
+    MovieDetail movie = moviePage.movieList!.first;
+
+    String quote =
+        await app<MovieGptService>().getQuoteFromMovie(movie.title ?? '');
+    log.info(quote);
   }
 }
