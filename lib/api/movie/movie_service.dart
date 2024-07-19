@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:http/http.dart' as http;
 import 'package:mini_hackathon_three/api/movie/chat_gpt_service.dart';
 import 'package:mini_hackathon_three/api/movie/data/movie_detail_page.dart';
@@ -9,6 +10,7 @@ import 'package:mini_hackathon_three/api/movie/data/movie_detail_page.dart';
 class MovieService implements MovieGptService {
   final tmbdToken = dotenv.env['TMBD_API_TOKEN'];
   final openAiKey = dotenv.env['OPENAI_API_KEY'];
+  final geminiAiKey = dotenv.env['GEMINI_API_KEY'];
 
   Future<List<MovieDetailPage>> getPopularMovies({required int pages}) async {
     final List<MovieDetailPage> movieDetailPages = [];
@@ -58,5 +60,18 @@ class MovieService implements MovieGptService {
     } else {
       return 'Failed to load quote';
     }
+  }
+
+  Future<String?> geminiQuotes(String movieTitle) async {
+    final GenerativeModel model = GenerativeModel(
+      model: 'gemini-1.5-flash',
+      apiKey: geminiAiKey ?? '',
+    );
+    final content = [
+      Content.text(
+          'Generiere ein Zitat aus dem Film $movieTitle. Ohne den Film in der Antwort zu erwähnen.')
+    ];
+    final response = await model.generateContent(content);
+    return response.text;
   }
 }

@@ -19,7 +19,6 @@ class _MovieGameScreenState extends State<MovieGameScreen> with LoggerMixin {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context).width;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -27,7 +26,7 @@ class _MovieGameScreenState extends State<MovieGameScreen> with LoggerMixin {
       ),
       body: BlocProvider(
         create: (context) => GameCubit(),
-        child: MovieGamesContent(size: size),
+        child: const MovieGamesContent(),
       ),
       // body: movieTest == null
       //     ? const CircularProgressIndicator()
