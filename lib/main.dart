@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:mini_hackathon_three/api/movie/data/movie.dart';
+import 'package:mini_hackathon_three/api/movie/data/movie_detail_page.dart';
 import 'package:mini_hackathon_three/api/movie/movie_service.dart';
 import 'package:mini_hackathon_three/core/app_service_locator.dart';
 import 'package:mini_hackathon_three/misc/logger.dart';
@@ -37,7 +37,7 @@ class MovieGameScreen extends StatefulWidget {
 }
 
 class _MovieGameScreenState extends State<MovieGameScreen> with LoggerMixin {
-  Movie? movie;
+  List<MovieDetailPage>? movieTest;
 
   @override
   Widget build(BuildContext context) {
@@ -46,17 +46,18 @@ class _MovieGameScreenState extends State<MovieGameScreen> with LoggerMixin {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: movie == null
+      body: movieTest == null
           ? const CircularProgressIndicator()
-          : Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    movie?.toString() ?? '',
-                  ),
-                ],
-              ),
+          : ListView.builder(
+              itemCount: movieTest!.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    ...movieTest![index].movieList!.map((e) => Text(e.title!)),
+                    const Divider(),
+                  ],
+                );
+              },
             ),
     );
   }
@@ -68,9 +69,10 @@ class _MovieGameScreenState extends State<MovieGameScreen> with LoggerMixin {
   }
 
   void loadMovie() async {
-    Movie loadedMovie = await app<MovieService>().getMovie(id: 'tt3896198');
+    List<MovieDetailPage> loadedMovie =
+        await app<MovieService>().getPopularMovies(pages: 10);
     setState(() {
-      movie = loadedMovie;
+      movieTest = loadedMovie;
     });
   }
 }

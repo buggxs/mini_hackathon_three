@@ -2,34 +2,37 @@ import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:mini_hackathon_three/api/movie/data/chat_gpt_service.dart';
-import 'package:mini_hackathon_three/api/movie/data/movie.dart';
-import 'package:mini_hackathon_three/api/movie/data/movie_detail.dart';
+import 'package:mini_hackathon_three/api/movie/chat_gpt_service.dart';
+import 'package:mini_hackathon_three/api/movie/data/movie_detail_page.dart';
 
 // movie id = tt3896198
 class MovieService implements MovieGptService {
-  Future<Movie> getMovie({required String id}) {
-    Uri url = Uri.https('www.omdbapi.com', '', {'i': id, 'apikey': 'b7c0cdea'});
-    return http.get(url).then(
-        (http.Response response) => Movie.fromJson(jsonDecode(response.body)));
+  final tmbdToken = dotenv.env['TMBD_API_TOKEN'];
+  final openAiKey = dotenv.env['OPENAI_API_KEY'];
+
+  Future<List<MovieDetailPage>> getPopularMovies({required int pages}) async {
+    final List<MovieDetailPage> movieDetailPages = [];
+    for (int i = 0; i < pages; i++) {
+      movieDetailPages.add(await fetchPopularMovieByPage(i + 1));
+    }
+    return movieDetailPages;
   }
 
-  Future<MovieDetail> fetchPopularMovies(int? page) async {
-    final apiKey = dotenv.env['TMBD_API_TOKEN'];
-    final uri = Uri(
-      scheme: 'https',
-      host: 'api.themoviedb.org',
-      path: '/3/movie/popular',
-      queryParameters: {
-        'api_key': apiKey,
-        'page': page?.toString(),
+  Future<MovieDetailPage> fetchPopularMovieByPage(int page) async {
+    final url = 'https://api.themoviedb.org/3/movie/popular?page=$page';
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        "accept": "application/json",
+        "Authorization": "Bearer $tmbdToken",
       },
     );
-    final response = await http.get(uri);
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return MovieDetail.fromJson(data);
+      return MovieDetailPage.fromJson(
+        jsonDecode(response.body),
+      );
     } else {
       throw Exception('Filme konnten nicht geladen werden');
     }
@@ -37,13 +40,12 @@ class MovieService implements MovieGptService {
 
   @override
   Future<String> getQuoteFromMovie(String movieTitle) async {
-    final apikey = dotenv.env['OPENAI_API_KEY'];
     final response = await http.post(
         Uri.parse(
             'https://api.openai.com/v1/engines/davinci-codex/completions'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $apikey',
+          'Authorization': 'Bearer $openAiKey',
         },
         body: json.encode({
           'prompt': 'Generiere ein Zitat aus dem Film $movieTitle',
