@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:mini_hackathon_three/api/movie/data/chat_gpt_service.dart';
+import 'package:mini_hackathon_three/api/movie/chat_gpt_service.dart';
 import 'package:mini_hackathon_three/api/movie/data/movie_detail_page.dart';
 
 // movie id = tt3896198
